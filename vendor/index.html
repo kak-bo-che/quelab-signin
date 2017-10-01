@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Bare - Start Bootstrap Template</title>
+
+    <!-- Bootstrap core CSS -->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom styles for this template -->
+    <style>
+      body {
+        padding-top: 54px;
+      }
+      @media (min-width: 992px) {
+        body {
+          padding-top: 56px;
+        }
+      }
+
+    </style>
+
+  </head>
+
+  <body>
+
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
+      <div class="container">
+        <a class="navbar-brand" href="#">Quelab</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarResponsive">
+        </div>
+      </div>
+    </nav>
+
+    <!-- Page Content -->
+    <div class="container">
+      <div class="row">
+        <div class="col-lg-12 ">
+    <h1 class="mt-5">Welcome to Quelab</h1>
+    <p>Visitors and members who don't have (or forgot to bring, or have not yet
+        activated) RFID keys, please manually sign in.
+    </p>
+    <div class="container">
+    <form action="/api/signin" method="POST">
+    <div class="form-group">
+      <label for="username">Full Name</label>
+      <input type="text" id="username" class="form-control">
+
+    <label class="form-check-label">
+        <input type="checkbox" class="form-check-input" id="is_member">
+        Member
+    </label>
+    </div>
+    <div class="form-group">
+
+      <p>I hereby acknowledge that I have <b>carefully</b> read the provisions of
+       the <i>Release of Liability</i>, fully understand the terms and conditions
+       expressed there, and do freely choose acceptance of the provisions of the
+        sections relating to assumption of risk, release of liability, covenant
+        not to sue, and third party indemnification.
+    </div>
+    <div class="form-group">
+        <input type="submit" value="Sign in" class="btn btn-primary">
+    </div>
+    </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap core JavaScript -->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/popper/popper.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.min.js"></script>
+
+  </body>
+
+</html>
