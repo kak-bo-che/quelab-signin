@@ -11,9 +11,15 @@ class SigninHandler(tornado.web.RequestHandler):
         self.app_log = logging.getLogger("tornado.application")
 
     def post(self):
-        username = self.get_argument('username')
-        is_member = self.get_argument('is_member', 'Non Member')
-        response = "Welcome: ({}) {}".format(is_member, username)
+        first_name = self.get_argument('firstName')
+        last_name = self.get_argument('lastName')
+        username = first_name + ' ' + last_name
+        is_member = self.get_argument('isMember', 'false')
+        if is_member == 'true':
+            member = 'Member'
+        else:
+            member = 'Non Member'
+        response = "Welcome: ({}) {}".format(member, username)
         self.write(response)
         self.app_log.info(response)
 
@@ -28,8 +34,7 @@ def make_app():
     static_path='vendor'
     return tornado.web.Application([
         (r"/api/signin", SigninHandler),
-        (r'/()',        tornado.web.StaticFileHandler, {'path': 'index.html'}),
-        (r'/vendor/(.*)', tornado.web.StaticFileHandler, {'path': static_path}),
+        (r'/static/README.md()', tornado.web.StaticFileHandler, {'path': 'README.md'})
 
     ], autoreload=True)
 
