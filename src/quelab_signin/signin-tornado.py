@@ -9,7 +9,7 @@ from wildapricot import WildApricotApi, WildApricotError
 
 from tornado.log import enable_pretty_logging
 enable_pretty_logging()
-
+public_root = os.path.join(os.path.dirname(__file__), '../../web/dist')
 class SignInError(Exception):
     # you would think tornado.web.HTTPError would be better, but you would be wrong
     # https://groups.google.com/forum/#!topic/python-tornado/XTpKcw_G--g
@@ -80,11 +80,12 @@ def make_app():
     mqtt_host = 'localhost'
     mqtt_topic = 'quelab/door/entry'
     set_logging()
-    static_path='vendor'
+    # static_path='vendor'
     return tornado.web.Application([
         (r"/api/signin", SigninHandler, {'api_key': api_key, 'mqtt_host': mqtt_host, 'mqtt_topic': mqtt_topic}),
-        (r'/static/README.md()', tornado.web.StaticFileHandler, {'path': 'README.md'})
-
+        (r'/static/README.md()', tornado.web.StaticFileHandler, {'path': 'README.md'}),
+        (r'/static/(.*)', tornado.web.StaticFileHandler, {'path': public_root}),
+        (r'/(.*)', tornado.web.StaticFileHandler, {'path': public_root })
     ], autoreload=True)
 
 if __name__ == "__main__":
