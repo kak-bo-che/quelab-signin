@@ -1,6 +1,11 @@
 import React, { Component } from 'react'
 import ReactDOM from 'react-dom'
 import mqtt from 'mqtt'
+import rfid_img from './icons/rfid.svg'
+import form_img from './icons/form.svg'
+import mqtt_online from './icons/server_online.svg'
+import mqtt_offline from './icons/server_offline.svg'
+import moment from 'moment'
 // import { Client, Message } from 'react-native-paho-mqtt';
 
 class MqttLoginListener extends Component {
@@ -28,6 +33,7 @@ class Contacts extends Component {
     this.client.on('offline', () => {
       this.handleDisconnected();
     })
+
     this.client.on('message', (topic, message) => {
       // message is Buffer
       // console.log(message.toString());
@@ -63,46 +69,101 @@ class Contacts extends Component {
   }
 
   handleContactReceived(contact){
-    this.setState(prevState => ({
-      recentLogins: prevState.recentLogins.concat(contact)
-    }));
+    let contacts = this.state.recentLogins.filter(old_contact => {
+      return old_contact['Id'] != contact['Id'];
+    })
+      this.setState(prevState => (
+        {
+        recentLogins: [contact].concat(contacts.slice(0, 9))
+      }));
+
   }
   render(){
     return (
       <div>
-      <h3>Recent Sign-ins</h3>
-      <ConnectionState connection_status={this.state.connection_established} />
-      <div className="row">
-        {this.state.recentLogins.map((contact, index ) => {
-          {/* contact.Id is the correct key to use here */}
-          return <Contact key={"contact-"+index} contact={contact} />
-          }
-        )}
-      </div>
+        <div className="d-flex justify-content-between row">
+          <h3>Recent Member Sign-ins</h3>
+          <ConnectionState connection_status={this.state.connection_established} />
+        </div>
+        <div className="row">
+          {this.state.recentLogins.map((contact, index ) => {
+            {/* contact.Id is the correct key to use here */}
+            return <Contact key={contact.Id} contact={contact} />
+            }
+          )}
+        </div>
       </div>
     )
   }
 }
+
 class ConnectionState extends Component {
   render(){
     let connected = null;
     if (this.props.connection_status == true){
-      connected = <div>Connected</div>
+      connected = <img src={mqtt_online} />
     } else {
-      connected = <div>Not Connected</div>
+      connected = <img src={mqtt_offline} />
     }
-    return( <div>{connected}</div> )
+    return( <div style={{"width": "30px", "height":"30px"}}>{connected}</div> )
+  }
+}
+
+class Avatar extends Component {
+  render(){
+    const avatar = this.props.avatar;
+    const id = this.props.id;
+    var avatar_url = null;
+    if (avatar === null){
+      avatar_url = 'https://robohash.org/' + id + '.png?size=110x110&set=set3&bgset=any'
+    } else {
+      const file_name = Object.keys(avatar)[0];
+      {/* check filename to mime here */}
+      avatar_url = "data:image/png;base64, " + avatar[file_name]
+    }
+    return(
+      <img className={this.props.className} src={avatar_url} />
+    )
+  }
+}
+
+class ContactDetails extends Component {
+  render(){
+    let contact = this.props.contact;
+    let image = null;
+    if (contact['source'] == 'rfid'){
+      image = rfid_img;
+    } else {
+      image = form_img;
+    }
+    return(
+      <div>
+        <div>
+          {moment(contact['signin_time']).fromNow()}
+        </div>
+        <div>
+          <img src={image} style={{"width": "60px"}}/>
+        </div>
+      </div>
+    )
   }
 }
 
 class Contact extends Component {
-    render(){
-      let contact = this.props.contact;
+  render(){
+      const contact = this.props.contact;
         return(
-            <div className="card col-2" style={{"width":"120px"}}>
-                <img className="card-img-top" src={"data:image/png;base64, " + contact.avatar['cykvn30z.png']}/>
-                <div className="card-title">{contact.FirstName} {contact.LastName}</div>
-                <div className="card-body"></div>
+            <div className="card col-2 p-0 m-2 border-dark border-rounded">
+                <div className="card-img-top bg-dark w-100 d-flex align-items-center" >
+                 < Avatar className="w-100" id={contact.Id} avatar={contact.avatar} />
+                </div>
+                <div className="card-body bg-light text-center p-0 d-flex align-items-end justify-content-center">
+                  <ContactDetails contact={contact} />
+                </div>
+                <div className="card-footer text-light bg-dark text-center p-0">
+                  <h5 className="m-1">{contact.FirstName} {contact.LastName}</h5>
+                </div>
+
             </div>
         )
     }

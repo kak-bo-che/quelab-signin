@@ -45,7 +45,6 @@ plugins.splice(1, 0, new HtmlWebpackPlugin(htmlPageOpts));
 const config = {
   entry: {
     app: './src/master.jsx',
-    service: './src/service.jsx',
     vendor: ['bootstrap', 'jquery', 'popper.js', 'react-dom', 'react-router-dom', 'showdown']
   },
   output: {

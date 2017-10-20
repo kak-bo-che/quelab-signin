@@ -5,7 +5,6 @@ import 'bootstrap'
 import { BrowserRouter as Router, Link, Route } from 'react-router-dom'
 import showdown from 'showdown'
 import hljs from 'highlight.js'
-import ProcessedRenderer from './service.jsx'
 import App from './sign_in.jsx'
 
 let container = document.createElement("div")
