@@ -6,6 +6,8 @@ const CleanWebpackPlugin = require('clean-webpack-plugin');
 const webpack = require('webpack');
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
 
+const isProd = (process.env.NODE_ENV === "production");
+
 const plugins = [
   new CleanWebpackPlugin(['dist']),
   new ExtractTextPlugin("[name].[contenthash].css"),
@@ -38,7 +40,9 @@ const htmlPageOpts = {
   }]
 }
 
-htmlPageOpts.devServer = 'http://0.0.0.0:8080'
+if (!isProd) {
+  htmlPageOpts.devServer = 'http://0.0.0.0:8080'
+}
 
 plugins.splice(1, 0, new HtmlWebpackPlugin(htmlPageOpts));
 
@@ -99,27 +103,33 @@ const config = {
   }
 };
 
-config.devServer = {
-  watchOptions: {
-    poll: true
-  },
-  host: '0.0.0.0',   // localhost doesn't work fo me
-  port: 8080,
-  proxy: {
-    '/static/README.md': {
-      target: 'http://0.0.0.0:8888',   //python server is here serving the README
+if (!isProd){
+  config.devServer = {
+    watchOptions: {
+      poll: true
     },
-    '/api': {
-      target: 'http://0.0.0.0:8888',   //python server is here serving API's
-    }
-  },
-  publicPath: "/static/",
-  //necessary for HTML5 "history api" - I guess used by react router...
-  historyApiFallback: {
-    index: '/static/'
-  },
-  open: true
+    host: '0.0.0.0',   // localhost doesn't work fo me
+    port: 8080,
+    proxy: {
+      '/static/README.md': {
+        target: 'http://0.0.0.0:8888',   //python server is here serving the README
+      },
+      '/api': {
+        target: 'http://0.0.0.0:8888',   //python server is here serving API's
+      }
+    },
+    publicPath: "/static/",
+    //necessary for HTML5 "history api" - I guess used by react router...
+    historyApiFallback: {
+      index: '/static/'
+    },
+    open: true
+  }
+  config.devtool = 'inline-source-map';
+} else {
+  config.devtool = 'cheap-module-source-map';
 }
-config.devtool = 'inline-source-map';
+
+
 
 module.exports = config;
