@@ -81,17 +81,20 @@ class Contacts extends Component {
   render(){
     return (
       <div>
-        <div className="d-flex justify-content-between row">
-          <h3>Recent Member Sign-ins</h3>
+      <div className="row mx-2">
+        <div className="col d-flex justify-content-between">
+          <h3 className="mb-0">Recent Member Sign-ins</h3>
           <ConnectionState connection_status={this.state.connection_established} />
         </div>
-        <div className="row">
-          {this.state.recentLogins.map((contact, index ) => {
-            {/* contact.Id is the correct key to use here */}
-            return <Contact key={contact.Id} contact={contact} />
-            }
-          )}
-        </div>
+      </div>
+
+      <div className="row mx-2">
+        {this.state.recentLogins.map((contact, index ) => {
+          {/* contact.Id is the correct key to use here */}
+          return <Contact key={contact.Id} contact={contact} />
+          }
+        )}
+      </div>
       </div>
     )
   }
@@ -101,9 +104,9 @@ class ConnectionState extends Component {
   render(){
     let connected = null;
     if (this.props.connection_status == true){
-      connected = <img src={mqtt_online} />
+      connected = <img src={mqtt_online} title="Connected to MQTT Server" />
     } else {
-      connected = <img src={mqtt_offline} />
+      connected = <img src={mqtt_offline} title="Not connected to MQTT Server" />
     }
     return( <div style={{"width": "30px", "height":"30px"}}>{connected}</div> )
   }
@@ -142,7 +145,7 @@ class ContactDetails extends Component {
           {moment(contact['signin_time']).fromNow()}
         </div>
         <div>
-          <img src={image} style={{"width": "60px"}}/>
+          <img src={image} style={{"width": "40px"}}/>
         </div>
       </div>
     )
@@ -153,7 +156,7 @@ class Contact extends Component {
   render(){
       const contact = this.props.contact;
         return(
-            <div className="card col-2 p-0 m-2 border-dark border-rounded">
+            <div className="card col-2 p-1 m-1 border-dark border-rounded">
                 <div className="card-img-top bg-dark w-100 d-flex align-items-center" >
                  < Avatar className="w-100" id={contact.Id} avatar={contact.avatar} />
                 </div>

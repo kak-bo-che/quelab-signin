@@ -48,26 +48,27 @@ class SigninHandler(tornado.web.RequestHandler):
         first_name = self.get_argument('firstName')
         last_name = self.get_argument('lastName')
         username = first_name + ' ' + last_name
-        is_member = self.get_argument('isMember', 'false')
-        try:
 
-            if is_member == 'true':
-                self.handle_member(first_name, last_name)
-                member = 'Member'
-                response = "Welcome: ({}) {}".format(member, username)
-            else:
-                member = 'Non Member'
-                response = "Welcome: ({}) {}".format(member, username)
+
+        try:
+            self.handle_member(first_name, last_name)
+
+        except SignInError as e:
+            self.app_log.warning(e.reason)
+            member = 'Non Member'
+            response = "Welcome: ({}) {}".format(member, username)
+            self.write(response)
+
+        except WildApricotError as e:
+            message = "Both first and last name are required"
+            self.write_error(404, message=message)
+            self.app_log.warning(message)
+        else:
+            member = 'Member'
+            response = "Welcome: ({}) {}".format(member, username)
             self.write(response)
             self.app_log.info(response)
 
-        except WildApricotError as e:
-            message = "Both first and last name are required for member sign in."
-            self.write_error(404, message=message)
-            self.app_log.warning(message)
-        except SignInError as e:
-            self.write_error(e.code, message=e.reason)
-            self.app_log.warning(e.reason)
 
 
 def set_logging():

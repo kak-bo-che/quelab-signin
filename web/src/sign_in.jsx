@@ -34,8 +34,7 @@ class SignInForm extends Component {
     }
 
     formSuccess(resp){
-      clearInterval(this.timer);
-      this.timer = setInterval(this.closeMessage, 5000);
+      this.timer = setTimeout(this.closeMessage, 5000);
       if (resp.status !== 200) {
         this.setState({formError: true });
       } else {
@@ -46,7 +45,6 @@ class SignInForm extends Component {
     }
 
     closeMessage(){
-      clearInterval(this.timer);
       this.setState({loginMessage: null, formError: null});
     }
 
@@ -64,7 +62,6 @@ class SignInForm extends Component {
     handleSubmit(event){
       event.preventDefault();
       this.setState({loginMessage: "Thank you for signing in"})
-      this.timer = setInterval(this.closeMessage, 5000);
       let data = new FormData()
       const formFields = ['firstName', 'lastName', 'isMember'];
       formFields.map( name => {
@@ -81,7 +78,7 @@ class SignInForm extends Component {
 
     render(){
         return(
-        <form  id="signin" onChange={this.handleChange} onSubmit={this.handleSubmit}>
+        <form className="mx-4" id="signin" onChange={this.handleChange} onSubmit={this.handleSubmit}>
               <LoginMessage message={this.state.loginMessage} error={this.state.formError} />
               <div className="form-row align-items-center">
                 <label className="sr-only">First Name</label>
@@ -91,17 +88,10 @@ class SignInForm extends Component {
                 <label className="sr-only">Last Name</label>
                 <input type="text" id="last_name" className="col-3 mr-3 form-control"
                          name="lastName" value={this.state.lastName} placeholder="Last Name" />
-                <label className="col-auto form-check-label mr-3">
-                    <input type="checkbox" id="is_member" className="form-check-input"
-                           name="isMember" checked={this.state.isMember}/>
-                    Member
-                </label>
                 <div className="col-auto">
                 <input type="submit" value="Sign in" role="button" className="btn btn-primary" />
               </div>
             </div>
-
-            <div className="form-group">
 
                 <blockquote className="my-3">I hereby acknowledge that I have <b>carefully</b> read the provisions of
                 the <i>Release of Liability</i>, fully understand the terms and conditions
@@ -109,7 +99,6 @@ class SignInForm extends Component {
                 sections relating to assumption of risk, release of liability, covenant
                 not to sue, and third party indemnification.
                 </blockquote>
-            </div>
         </form>
         )
     }
@@ -129,25 +118,29 @@ class LoginMessage extends Component{
     )
   }
 }
-class SignIn extends Component {
-  render() {
-
-    return (
-        <div className="col-10 mx-5">
-            <div className="row">
-              <h1 className="display-3">Welcome to Quelab</h1>
-            <div >
-                <SignInForm />
-                <Contacts />
-            </div>
-          </div>
-        </div>
+class Welcome extends Component{
+  render(){
+    return(
+      <div className="col bg-light border border-bottom-2 border-left-0 border-right-0 mb-2">
+        <h1 className="display-3 m-0">Welcome to Quelab</h1>
+      </div>
     )
-
   }
-
 }
+class Footer extends Component {
+  render(){
+    return(
+      <footer className="footer">
+        <div className='container'>
+            <span> Visitors and members who don't have (or forgot to bring, or have not yet
+            activated) <span className="font-weight-bold">RFID keys</span>, please manually sign in.
+          </span>
+        </div>
+      </footer>
 
+    )
+  }
+}
 
 class Info extends Component {
 
@@ -181,8 +174,6 @@ class Info extends Component {
 
 
 class App extends Component {
-
-
   constructor() {
     super()
     this.state = { docs: undefined, version: undefined }
@@ -204,16 +195,10 @@ class App extends Component {
   render() {
     return (
       <div>
-        <SignIn />
-
-          <footer className="footer">
-            <div className='container'>
-
-            <span> Visitors and members who don't have (or forgot to bring, or have not yet
-            activated) <span className="font-weight-bold">RFID keys</span>, please manually sign in.
-            </span>
-            </div>
-          </footer>
+        <Welcome />
+        <SignInForm />
+        <Contacts />
+        <Footer />
 
       </div>
 
