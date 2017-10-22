@@ -5,11 +5,10 @@ import tornado.ioloop
 import tornado.web
 import paho.mqtt.publish as publish
 from datetime import datetime, timezone
-from wildapricot import WildApricotApi, WildApricotError
+from .wildapricot import WildApricotApi, WildApricotError
 
 from tornado.log import enable_pretty_logging
 enable_pretty_logging()
-public_root = os.path.join(os.path.dirname(__file__), '../../web/dist')
 
 class SignInError(Exception):
     # you would think tornado.web.HTTPError would be better, but you would be wrong
@@ -20,10 +19,10 @@ class SignInError(Exception):
         self.reason = reason
 
 class SigninHandler(tornado.web.RequestHandler):
-    def initialize(self, api_key, mqtt_host, mqtt_topic):
+    def initialize(self, api_key, mqtt_host):
         self.app_log = logging.getLogger("tornado.application")
         self.mqtt_host = mqtt_host
-        self.mqtt_topic = mqtt_topic
+        self.mqtt_topic = 'quelab/door/entry'
         self.wa_api = WildApricotApi(api_key)
 
     def write_error(self, status_code, **kwargs):
@@ -71,27 +70,3 @@ class SigninHandler(tornado.web.RequestHandler):
 
 
 
-def set_logging():
-    app_log = logging.getLogger("tornado.application")
-    app_log.setLevel(logging.INFO)
-    access_log = logging.getLogger("tornado.access")
-    access_log.setLevel(logging.WARNING)
-
-def make_app():
-    api_key='4fy63rfn598ip4svqkse8ic7eb9rcv'
-    mqtt_host = 'localhost'
-    mqtt_topic = 'quelab/door/entry'
-    set_logging()
-    # static_path='vendor'
-    return tornado.web.Application([
-        (r"/api/signin", SigninHandler, {'api_key': api_key, 'mqtt_host': mqtt_host, 'mqtt_topic': mqtt_topic}),
-        (r'/static/README.md()', tornado.web.StaticFileHandler, {'path': 'README.md'}),
-        (r'/static/(.*)', tornado.web.StaticFileHandler, {'path': public_root}),
-        (r'/()', tornado.web.StaticFileHandler, {'path': public_root + '/index.html'}),
-        (r'/(.*)', tornado.web.StaticFileHandler, {'path': public_root })
-    ], autoreload=True)
-
-if __name__ == "__main__":
-    app = make_app()
-    app.listen(8888)
-    tornado.ioloop.IOLoop.current().start()
