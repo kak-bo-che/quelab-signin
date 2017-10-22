@@ -6,12 +6,17 @@ import tornado
 from quelab_signin import quelab_signin
 
 def parse_args():
+    key = ''
+    if os.environ.get('WA_API_KEY'):
+        key = os.environ.get('WA_API_KEY')
+
     parser = argparse.ArgumentParser(description='Backend for Quelab Sign in webpage')
-    parser.add_argument('-k', '--api_key', help='Api Key to use with Wild Apricot')
+    parser.add_argument('-k', '--api_key', default=key, help="Api Key to use with Wild Apricot: {}".format(key))
     parser.add_argument('-s', '--static', default='dist', help='Path to static files to serve for webpage')
     parser.add_argument('-m', '--mqtt_host', default='localhost', help='MQTT host to publish to')
     parser.add_argument('-p', '--port', default=8888, )
     parser.add_argument('-v', '--auto_reload',  action='store_true', help='verbose logging')
+
     return parser.parse_args()
 
 def set_logging():
