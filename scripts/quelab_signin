@@ -21,13 +21,18 @@ def set_logging():
     access_log.setLevel(logging.WARNING)
 
 def make_app(config):
+    settings = {
+        # "static_path": os.path.join(os.path.dirname(__file__), config.static),
+        "autoreload": config.auto_reload
+        }
     set_logging()
     return tornado.web.Application([
         (r"/api/signin", quelab_signin.SigninHandler, {'api_key': config.api_key,
                                                        'mqtt_host': config.mqtt_host}),
         (r'/()', tornado.web.StaticFileHandler, {'path': config.static + '/index.html'}),
-        (r'/(.*)', tornado.web.StaticFileHandler, {'path': config.static})
-    ], autoreload=True)
+        (r'/index.html()', tornado.web.StaticFileHandler, {'path': config.static + '/index.html'}),
+        (r'/static/(.*)', tornado.web.StaticFileHandler, {'path': config.static})
+    ], **settings)
 
 if __name__ == "__main__":
     config = parse_args()
