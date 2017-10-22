@@ -101,7 +101,9 @@ ENV/
 .mypy_cache/
 
 # UI
-web/node_modules
+dist.tar.gz
 
 # vscode
 .vscode
+
+
