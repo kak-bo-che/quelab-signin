@@ -14,7 +14,7 @@ def parse_args():
     parser.add_argument('-k', '--api_key', default=key, help="Api Key to use with Wild Apricot: {}".format(key))
     parser.add_argument('-s', '--static', default='dist', help='Path to static files to serve for webpage')
     parser.add_argument('-m', '--mqtt_host', default='localhost', help='MQTT host to publish to')
-    parser.add_argument('-p', '--port', default=8888, )
+    parser.add_argument('-p', '--port', default=8888, help="which port to listen on" )
     parser.add_argument('-v', '--auto_reload',  action='store_true', help='verbose logging')
 
     return parser.parse_args()
@@ -27,7 +27,6 @@ def set_logging():
 
 def make_app(config):
     settings = {
-        # "static_path": os.path.join(os.path.dirname(__file__), config.static),
         "autoreload": config.auto_reload
         }
     set_logging()
