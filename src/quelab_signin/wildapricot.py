@@ -1,5 +1,6 @@
 import json
 import os
+import logging
 import urllib.parse
 from urllib.error import URLError
 import wildapricotapi
@@ -10,6 +11,7 @@ class WildApricotError(Exception):
 
 class WildApricotApi(object):
     def __init__(self, api_key):
+        self.app_log = logging.getLogger("wildapricot.api")
         self.api = WaApiClient(api_key=api_key)
         self.account = None
         self.connected = False
@@ -22,7 +24,8 @@ class WildApricotApi(object):
                 accounts = self.api.execute_request("/v2.1/accounts")
                 self.account = accounts[0]
                 self.connected = True
-        except URLError:
+        except URLError as err:
+            self.app_log.error(err.reason)
             self.connected = False
 
     def find_contact_by_filter(self, filter):
