@@ -1,0 +1,34 @@
+#!/usr/bin/env python
+import argparse
+import logging
+import os
+from quelab_signin import wildapricot
+
+def parse_args():
+    key = ''
+    if os.environ.get('WA_API_KEY'):
+        key = os.environ.get('WA_API_KEY')
+
+    parser = argparse.ArgumentParser(description='WildApricot api validation')
+    parser.add_argument('-k', '--api_key', default=key, help="Api Key to use with Wild Apricot: {}".format(key))
+    parser.add_argument('-r', '--rfid', help='Find Contact by rfid')
+    parser.add_argument('-f', '--first_name',  help='Contact First Name')
+    parser.add_argument('-l', '--last_name',  help='Contact Last Name')
+
+    return parser.parse_args()
+
+if __name__ == "__main__":
+    config = parse_args()
+    if config.api_key:
+        wapi = wildapricot.WildApricotApi(api_key=config.api_key)
+        if config.rfid:
+            contact = wapi.find_contact_by_rfid(config.rfid)
+        else:
+            if config.first_name and config.last_name:
+                contact = wapi.find_contact_by_name(config.first_name, config.last_name)
+            else:
+                print("Finding Contact by Name requires both First and Last Name")
+        print(contact)
+    else:
+        print("set WA_API_KEY environment variable or pass in as parameter")
+        exit(1)
